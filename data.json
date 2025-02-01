@@ -1,0 +1,54 @@
+{
+    "base-folder": "./assets",
+    "levels":{
+        "0-1: INTO THE FIRE": {
+            "folder": "0-1",
+            "thumbnail": "thumbnail.png",
+            "segments": {
+                "0": {
+                    "name": "INTO THE FIRE",
+                    "free": "free.ogg",
+                    "combat": "combat.ogg"
+                }
+            }
+        },
+        "0-2: THE MEATGRINDER": {
+            "folder": "0-2",
+            "thumbnail": "thumbnail.png",
+            "segments": {
+                "0": {
+                    "name": "THE MEATGRINDER",
+                    "free": "free.ogg",
+                    "combat": "combat.ogg"
+                }
+            }
+        },
+        "1-1: HEART OF THE SUNRISE": {
+            "folder": "1-1",
+            "thumbnail": "thumbnail.png",
+            "segments": {
+                "0": {
+                    "name": "HEART OF THE SUNRISE",
+                    "free": "free.ogg",
+                    "combat": "combat.ogg"
+                }
+            }
+        },
+        "1-2: THE BURNING WORLD": {
+            "folder": "1-2",
+            "thumbnail": "1-2 The Burning World.png",
+            "segments": {
+                "0": {
+                    "name": "Dark",
+                    "free": "1-2 Dark Clean.ogg",
+                    "combat": "1-2 Dark Battle.ogg"
+                },
+                "1": {
+                    "name": "Noise",
+                    "free": "1-2 Noise Clean.ogg",
+                    "combat": "1-2 Noise Battle.ogg"
+                }
+            }
+        }
+    }
+}
