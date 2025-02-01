@@ -11,6 +11,17 @@
 // Include the functions source file so that all functions are compiled together.
 #include "functions.c"
 
+// Define button rectangles
+Rectangle pauseButton = { 20, 0, 100, 30 }; // Y will be set later
+Rectangle combatButton = { 0, 0, 100, 30 }; // Position will be set later
+Rectangle segmentButton = { 0, 0, 100, 30 }; // Position will be set later
+bool persistentCombat = false; // New global variable for combat state
+bool showSegmentMenu = false; // Add at top with other globals
+
+// Add after initial variable declarations
+float scrollY = 0.0f;
+const float scrollSpeed = 30.0f;
+
 //------------------------------------------------------------------------------------
 // Main Entry Point
 //------------------------------------------------------------------------------------
@@ -23,6 +34,14 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "ultraplayer");
     InitAudioDevice();
     SetTargetFPS(60);
+
+    // Update button positions after window creation
+    const int controlPanelHeight = 50;
+    pauseButton.y = screenHeight - controlPanelHeight + 10;
+    combatButton.x = pauseButton.x + pauseButton.width + 20;
+    combatButton.y = pauseButton.y;
+    segmentButton.x = screenWidth - 120; // New position from right edge
+    segmentButton.y = pauseButton.y;
 
     // Variables for level selection and controls
     Level levels[MAX_LEVELS];
@@ -47,12 +66,14 @@ int main(void)
     const int padding = 20;
     int buttonsPerRow = screenWidth / (buttonWidth + padding);
 
+    // After button layout configuration
+    int totalRows = (levelCount + buttonsPerRow - 1) / buttonsPerRow;
+    int contentHeight = totalRows * (buttonHeight + padding) + padding;
+    int startX = (screenWidth - (buttonsPerRow * (buttonWidth + padding) - padding)) / 2;
+
     // --- Define control panel dimensions (bottom of the window) ---
-    const int controlPanelHeight = 50;
     // Pause/Resume button inside the control panel
-    Rectangle pauseButton = { 20, screenHeight - controlPanelHeight + 10, 100, 30 };
     // Combat mode button (Initially hidden)
-    Rectangle combatButton = { pauseButton.x + pauseButton.width + 20, pauseButton.y, 100, 30 };
     // Progress bar (always visible)
     Rectangle progressBar = { 250, screenHeight - controlPanelHeight + 20, 400, 10 };
 
@@ -62,8 +83,11 @@ int main(void)
         // Update currently playing music stream if one is active
         if (currentPlaying != -1)
         {
-            UpdateMusicStream(levels[currentPlaying].combatMusic);
-            UpdateMusicStream(levels[currentPlaying].music);
+            Segment *currentSeg = &levels[currentPlaying].segments[levels[currentPlaying].currentSegment];
+            UpdateMusicStream(currentSeg->free);
+            if (currentSeg->hasCombat) {
+                UpdateMusicStream(currentSeg->combat);
+            }
         }
 
         // --- Handle Input for Level Buttons ---
@@ -78,34 +102,40 @@ int main(void)
                 int y = padding + row * (buttonHeight + padding);
                 Rectangle buttonRec = { (float)x, (float)y, (float)buttonWidth, (float)buttonHeight };
 
-                if (CheckCollisionPointRec(mousePoint, buttonRec) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-                {
+                if (CheckCollisionPointRec(mousePoint, buttonRec) && 
+                    IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
+                    mousePoint.y < screenHeight - controlPanelHeight &&
+                    !showSegmentMenu) {  // Only allow selection if menu is closed
                     // Stop any currently playing music
                     if (currentPlaying != -1)
                     {
-                        StopMusicStream(levels[currentPlaying].combatMusic);
-                        StopMusicStream(levels[currentPlaying].music);
+                        Segment *oldSeg = &levels[currentPlaying].segments[levels[currentPlaying].currentSegment];
+                        StopMusicStream(oldSeg->free);
+                        if (oldSeg->hasCombat) {
+                            StopMusicStream(oldSeg->combat);
+                        }
                     }
 
-                    // Play the selected level's music while retaining combat mode
-                    if (inCombat)
-                    {
-                        SetMusicVolume(levels[i].combatMusic, 1.0);
-                        SetMusicVolume(levels[i].music, 0.0);
-                    }
-                    else
-                    {
-                        SetMusicVolume(levels[i].combatMusic, 0.0);
-                        SetMusicVolume(levels[i].music, 1.0);
-                    }
-
-                    PlayMusicStream(levels[i].music);
-                    PlayMusicStream(levels[i].combatMusic);
+                    // Start playing the new level's first segment
                     currentPlaying = i;
+                    levels[currentPlaying].currentSegment = 0;
+                    Segment *newSeg = &levels[currentPlaying].segments[0];
+                    
+                    // Start both streams if combat music exists
+                    PlayMusicStream(newSeg->free);
+                    if (newSeg->hasCombat) {
+                        PlayMusicStream(newSeg->combat);
+                        // Set initial volumes based on persistent combat state
+                        if (persistentCombat) {
+                            SetMusicVolume(newSeg->free, 0.0f);
+                            SetMusicVolume(newSeg->combat, 1.0f);
+                        } else {
+                            SetMusicVolume(newSeg->free, 1.0f);
+                            SetMusicVolume(newSeg->combat, 0.0f);
+                        }
+                    }
                     isPaused = false;
-
-                    // **Check if this level has a combat track**
-                    hasCombatMusic = (levels[i].combatMusic.stream.buffer != NULL);
+                    showSegmentMenu = false;
                 }
             }
         }
@@ -119,50 +149,217 @@ int main(void)
             {
                 if (isPaused)
                 {
-                    PauseMusicStream(levels[currentPlaying].combatMusic);
-                    PauseMusicStream(levels[currentPlaying].music);
+                    PauseMusicStream(levels[currentPlaying].segments[levels[currentPlaying].currentSegment].free);
+                    if (levels[currentPlaying].segments[levels[currentPlaying].currentSegment].hasCombat) {
+                        PauseMusicStream(levels[currentPlaying].segments[levels[currentPlaying].currentSegment].combat);
+                    }
                 }
                 else
                 {
-                    ResumeMusicStream(levels[currentPlaying].combatMusic);
-                    ResumeMusicStream(levels[currentPlaying].music);
+                    ResumeMusicStream(levels[currentPlaying].segments[levels[currentPlaying].currentSegment].free);
+                    if (levels[currentPlaying].segments[levels[currentPlaying].currentSegment].hasCombat) {
+                        ResumeMusicStream(levels[currentPlaying].segments[levels[currentPlaying].currentSegment].combat);
+                    }
                 }
             }
         }
 
         // Check Combat button click – switch to combat mode if not already active
-        if (hasCombatMusic && CheckCollisionPointRec(mousePoint, combatButton) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        if (CheckCollisionPointRec(mousePoint, combatButton) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
+            persistentCombat = !persistentCombat;
             if (currentPlaying != -1)
             {
-                if (inCombat)
-                {   // Switch to free music if in combat
-                    SetMusicVolume(levels[currentPlaying].combatMusic, 0.0);
-                    SetMusicVolume(levels[currentPlaying].music, 1.0);
-                    inCombat = false;
-                }
-                else
+                Segment *currentSeg = &levels[currentPlaying].segments[levels[currentPlaying].currentSegment];
+                if (currentSeg->hasCombat)
                 {
-                    SetMusicVolume(levels[currentPlaying].combatMusic, 1.0);
-                    SetMusicVolume(levels[currentPlaying].music, 0.0);
-                    inCombat = true;
+                    if (persistentCombat)
+                    {
+                        SetMusicVolume(currentSeg->free, 0.0f);
+                        SetMusicVolume(currentSeg->combat, 1.0f);
+                    }
+                    else
+                    {
+                        SetMusicVolume(currentSeg->free, 1.0f);
+                        SetMusicVolume(currentSeg->combat, 0.0f);
+                    }
                 }
             }
+        }
+
+        // Handle segment button click
+        if (currentPlaying != -1 && 
+            CheckCollisionPointRec(mousePoint, segmentButton) && 
+            IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            showSegmentMenu = !showSegmentMenu;
+        }
+
+        // Handle segment selection if menu is shown
+        if (showSegmentMenu && currentPlaying != -1) {
+            // Calculate maximum segment name width
+            float maxWidth = segmentButton.width;
+            for (int i = 0; i < levels[currentPlaying].segmentCount; i++) {
+                float nameWidth = MeasureText(levels[currentPlaying].segments[i].name, 10);
+                maxWidth = fmaxf(maxWidth, nameWidth + 20); // Add padding
+            }
+
+            // Menu background - align right edge with button
+            Rectangle menuBg = {
+                segmentButton.x + segmentButton.width - maxWidth - 10,
+                segmentButton.y - (levels[currentPlaying].segmentCount * 40),
+                maxWidth + 10, // Width based on longest name
+                levels[currentPlaying].segmentCount * 40 + 5
+            };
+            DrawRectangleRec(menuBg, DARKGRAY);
+
+            // Draw segments
+            for (int i = 0; i < levels[currentPlaying].segmentCount; i++) {
+                Rectangle segmentRec = {
+                    menuBg.x + 5,
+                    segmentButton.y - ((i + 1) * 40) + 5,
+                    maxWidth,
+                    30
+                };
+
+                // Check for mouse hover
+                Vector2 mousePoint = GetMousePosition();
+                bool isHovered = CheckCollisionPointRec(mousePoint, segmentRec);
+                bool isSelected = (i == levels[currentPlaying].currentSegment);
+
+                // Draw segment background
+                if (isSelected) {
+                    DrawRectangleRec(segmentRec, WHITE);       // White background for selected
+                    DrawRectangleLinesEx(segmentRec, 1, GRAY); // Gray border
+                } else {
+                    DrawRectangleRec(segmentRec, isHovered ? LIGHTGRAY : GRAY);
+                }
+
+                // Draw segment name with consistent left padding
+                DrawText(levels[currentPlaying].segments[i].name,
+                        segmentRec.x + 10,
+                        segmentRec.y + (segmentRec.height - 10) / 2,
+                        10,
+                        isSelected ? BLACK : WHITE);
+
+                if (CheckCollisionPointRec(mousePoint, segmentRec) && 
+                    IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    // Stop current segment
+                    Segment *oldSeg = &levels[currentPlaying].segments[levels[currentPlaying].currentSegment];
+                    StopMusicStream(oldSeg->free);
+                    if (oldSeg->hasCombat) {
+                        StopMusicStream(oldSeg->combat);
+                    }
+
+                    // Switch to new segment
+                    levels[currentPlaying].currentSegment = i;
+                    Segment *newSeg = &levels[currentPlaying].segments[i];
+                    PlayMusicStream(newSeg->free);
+                    if (newSeg->hasCombat) {
+                        PlayMusicStream(newSeg->combat);
+                        if (persistentCombat) {
+                            SetMusicVolume(newSeg->free, 0.0f);
+                            SetMusicVolume(newSeg->combat, 1.0f);
+                        } else {
+                            SetMusicVolume(newSeg->free, 1.0f);
+                            SetMusicVolume(newSeg->combat, 0.0f);
+                        }
+                    }
+                    showSegmentMenu = false;
+                }
+            }
+        }
+
+        // Add click-outside handler after segment menu code
+        if (showSegmentMenu && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            // Calculate menu bounds
+            float maxWidth = segmentButton.width;
+            for (int i = 0; i < levels[currentPlaying].segmentCount; i++) {
+                float nameWidth = MeasureText(levels[currentPlaying].segments[i].name, 10);
+                maxWidth = fmaxf(maxWidth, nameWidth + 20);
+            }
+            
+            Rectangle menuBounds = {
+                segmentButton.x + segmentButton.width - maxWidth - 10,
+                segmentButton.y - (levels[currentPlaying].segmentCount * 40),
+                maxWidth + 10,
+                levels[currentPlaying].segmentCount * 40 + 5
+            };
+            
+            // Close menu if clicked outside
+            if (!CheckCollisionPointRec(mousePoint, menuBounds) &&
+                !CheckCollisionPointRec(mousePoint, segmentButton)) {
+                showSegmentMenu = false;
+            }
+        }
+
+        // In main game loop, before drawing
+        // Handle scrolling
+        if (GetMouseWheelMove() != 0) {
+            scrollY += GetMouseWheelMove() * scrollSpeed;
+            // Limit scrolling
+            float maxScroll = 0.0f;
+            float minScroll = -(contentHeight - (screenHeight - controlPanelHeight));
+            if (minScroll > 0) minScroll = 0;
+            if (scrollY < minScroll) scrollY = minScroll;
+            if (scrollY > maxScroll) scrollY = maxScroll;
         }
 
         // --- Draw ---
         BeginDrawing();
         ClearBackground(DARKGRAY);
 
-        // Draw level buttons (only in the upper part of the window)
+        // Update level button drawing code
         for (int i = 0; i < levelCount; i++)
         {
             int row = i / buttonsPerRow;
             int col = i % buttonsPerRow;
-            int x = padding + col * (buttonWidth + padding);
-            int y = padding + row * (buttonHeight + padding);
+            int x = startX + col * (buttonWidth + padding);
+            int y = padding + row * (buttonHeight + padding) + scrollY;
+            
+            // Skip if button is outside visible area
+            if (y + buttonHeight < 0 || y > screenHeight - controlPanelHeight) {
+                continue;
+            }
+            
             Rectangle buttonRec = { (float)x, (float)y, (float)buttonWidth, (float)buttonHeight };
+            
+            // Update click detection to account for scroll position
+            if (CheckCollisionPointRec(mousePoint, buttonRec) && 
+                IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
+                mousePoint.y < screenHeight - controlPanelHeight &&
+                !showSegmentMenu) {  // Only allow selection if menu is closed
+                // Stop any currently playing music
+                if (currentPlaying != -1)
+                {
+                    Segment *oldSeg = &levels[currentPlaying].segments[levels[currentPlaying].currentSegment];
+                    StopMusicStream(oldSeg->free);
+                    if (oldSeg->hasCombat) {
+                        StopMusicStream(oldSeg->combat);
+                    }
+                }
 
+                // Start playing the new level's first segment
+                currentPlaying = i;
+                levels[currentPlaying].currentSegment = 0;
+                Segment *newSeg = &levels[currentPlaying].segments[0];
+                
+                // Start both streams if combat music exists
+                PlayMusicStream(newSeg->free);
+                if (newSeg->hasCombat) {
+                    PlayMusicStream(newSeg->combat);
+                    // Set initial volumes based on persistent combat state
+                    if (persistentCombat) {
+                        SetMusicVolume(newSeg->free, 0.0f);
+                        SetMusicVolume(newSeg->combat, 1.0f);
+                    } else {
+                        SetMusicVolume(newSeg->free, 1.0f);
+                        SetMusicVolume(newSeg->combat, 0.0f);
+                    }
+                }
+                isPaused = false;
+                showSegmentMenu = false;
+            }
+            
             // Draw a border (highlighted if this level is playing)
             Color borderColor = (i == currentPlaying) ? RED : BLACK;
             DrawRectangleLines(x, y, buttonWidth, buttonHeight, borderColor);
@@ -194,13 +391,107 @@ int main(void)
         DrawText(pauseText, pauseButton.x + (pauseButton.width - pauseTextWidth) / 2,
                  pauseButton.y + (pauseButton.height - 10) / 2, 10, WHITE);
 
-        // **Only draw combat button if the level has combat music**
-        if (hasCombatMusic)
-        {
-            DrawRectangleRec(combatButton, GRAY);
-            int combatTextWidth = MeasureText("Toggle Combat", 10);
-            DrawText("Toggle Combat", combatButton.x + (combatButton.width - combatTextWidth) / 2,
-                     combatButton.y + (combatButton.height - 10) / 2, 10, WHITE);
+        // Always draw combat button when a level is playing
+        if (currentPlaying != -1) {
+            Segment *currentSeg = &levels[currentPlaying].segments[levels[currentPlaying].currentSegment];
+            Color buttonColor = GRAY;
+            
+            if (currentSeg->hasCombat) {
+                buttonColor = persistentCombat ? RED : GRAY;
+            } else {
+                buttonColor = DARKGRAY; // Grayed out when no combat available
+            }
+            
+            DrawRectangleRec(combatButton, buttonColor);
+            const char* combatText = "Combat";
+            int combatTextWidth = MeasureText(combatText, 10);
+            DrawText(combatText, 
+                    combatButton.x + (combatButton.width - combatTextWidth) / 2,
+                    combatButton.y + (combatButton.height - 10) / 2, 
+                    10, WHITE);
+        }
+
+        // Draw segment button and menu
+        if (currentPlaying != -1 && levels[currentPlaying].segmentCount > 1) {
+            // Calculate maximum segment name width first
+            float maxWidth = segmentButton.width;
+            for (int i = 0; i < levels[currentPlaying].segmentCount; i++) {
+                float nameWidth = MeasureText(levels[currentPlaying].segments[i].name, 10);
+                maxWidth = fmaxf(maxWidth, nameWidth + 20);
+            }
+
+            // Main segment button
+            DrawRectangleRec(segmentButton, GRAY);
+            const char* segText = "Segments";
+            int segTextWidth = MeasureText(segText, 10);
+            DrawText(segText, 
+                    segmentButton.x + (segmentButton.width - segTextWidth) / 2,
+                    segmentButton.y + (segmentButton.height - 10) / 2, 
+                    10, WHITE);
+
+            if (showSegmentMenu) {
+                Rectangle menuBg = {
+                    segmentButton.x + segmentButton.width - maxWidth - 10,
+                    segmentButton.y - (levels[currentPlaying].segmentCount * 40),
+                    maxWidth + 10,
+                    levels[currentPlaying].segmentCount * 40 + 5
+                };
+                DrawRectangleRec(menuBg, DARKGRAY);
+
+                // Update segment selection handler to use same coordinates
+                for (int i = 0; i < levels[currentPlaying].segmentCount; i++) {
+                    Rectangle segmentRec = {
+                        menuBg.x + 5,
+                        segmentButton.y - ((i + 1) * 40) + 5,
+                        maxWidth,
+                        30
+                    };
+
+                    // Check for mouse hover and draw segment
+                    Vector2 mousePoint = GetMousePosition();
+                    bool isHovered = CheckCollisionPointRec(mousePoint, segmentRec);
+                    bool isSelected = (i == levels[currentPlaying].currentSegment);
+
+                    if (isSelected) {
+                        DrawRectangleRec(segmentRec, WHITE);
+                        DrawRectangleLinesEx(segmentRec, 1, GRAY);
+                    } else {
+                        DrawRectangleRec(segmentRec, isHovered ? LIGHTGRAY : GRAY);
+                    }
+
+                    DrawText(levels[currentPlaying].segments[i].name,
+                            segmentRec.x + 10,
+                            segmentRec.y + (segmentRec.height - 10) / 2,
+                            10,
+                            isSelected ? BLACK : WHITE);
+
+                    if (CheckCollisionPointRec(mousePoint, segmentRec) && 
+                        IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                        // Stop current segment
+                        Segment *oldSeg = &levels[currentPlaying].segments[levels[currentPlaying].currentSegment];
+                        StopMusicStream(oldSeg->free);
+                        if (oldSeg->hasCombat) {
+                            StopMusicStream(oldSeg->combat);
+                        }
+
+                        // Switch to new segment
+                        levels[currentPlaying].currentSegment = i;
+                        Segment *newSeg = &levels[currentPlaying].segments[i];
+                        PlayMusicStream(newSeg->free);
+                        if (newSeg->hasCombat) {
+                            PlayMusicStream(newSeg->combat);
+                            if (persistentCombat) {
+                                SetMusicVolume(newSeg->free, 0.0f);
+                                SetMusicVolume(newSeg->combat, 1.0f);
+                            } else {
+                                SetMusicVolume(newSeg->free, 1.0f);
+                                SetMusicVolume(newSeg->combat, 0.0f);
+                            }
+                        }
+                        showSegmentMenu = false;
+                    }
+                }
+            }
         }
 
         // If a track is playing, draw its progress
@@ -208,10 +499,10 @@ int main(void)
         {
             DrawRectangleRec(progressBar, LIGHTGRAY);
 
-            float musicLength = inCombat ? GetMusicTimeLength(levels[currentPlaying].combatMusic)
-                                         : GetMusicTimeLength(levels[currentPlaying].music);
-            float musicTime = inCombat ? GetMusicTimePlayed(levels[currentPlaying].combatMusic)
-                                       : GetMusicTimePlayed(levels[currentPlaying].music);
+            float musicLength = inCombat ? GetMusicTimeLength(levels[currentPlaying].segments[levels[currentPlaying].currentSegment].combat)
+                                         : GetMusicTimeLength(levels[currentPlaying].segments[levels[currentPlaying].currentSegment].free);
+            float musicTime = inCombat ? GetMusicTimePlayed(levels[currentPlaying].segments[levels[currentPlaying].currentSegment].combat)
+                                       : GetMusicTimePlayed(levels[currentPlaying].segments[levels[currentPlaying].currentSegment].free);
             float progress = (musicLength > 0.0f) ? (musicTime / musicLength) : 0.0f;
             Rectangle progressFill = progressBar;
             progressFill.width = progress * progressBar.width;

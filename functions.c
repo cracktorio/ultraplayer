@@ -65,77 +65,73 @@ bool ParseJSONData(const char *jsonFileName, Level levels[], int *levelCount)
     {
         if (*levelCount >= MAX_LEVELS) break;
         
-        // Use the JSON key as the level name.
+        // Level name
         const char *levelKey = levelEntry->string;
         if (!levelKey) continue;
         strncpy(levels[*levelCount].name, levelKey, sizeof(levels[*levelCount].name) - 1);
-        levels[*levelCount].name[sizeof(levels[*levelCount].name) - 1] = '\0';
         
-        // Get required properties: folder, thumbnail and segments from the level entry.
+        // Get required properties
         cJSON *folderItem = cJSON_GetObjectItemCaseSensitive(levelEntry, "folder");
-        cJSON *thumbItem  = cJSON_GetObjectItemCaseSensitive(levelEntry, "thumbnail");
-        cJSON *segments   = cJSON_GetObjectItemCaseSensitive(levelEntry, "segments");
+        cJSON *thumbItem = cJSON_GetObjectItemCaseSensitive(levelEntry, "thumbnail");
+        cJSON *segments = cJSON_GetObjectItemCaseSensitive(levelEntry, "segments");
+        
         if (!cJSON_IsString(folderItem) || !cJSON_IsString(thumbItem) || !segments)
         {
             printf("Warning: Skipping level '%s' because of missing fields.\n", levelKey);
             continue;
         }
-        
-        // Get segment "0" for music information.
-        cJSON *segment0 = cJSON_GetObjectItemCaseSensitive(segments, "0");
-        if (!segment0)
-        {
-            printf("Warning: Skipping level '%s' because segment 0 is missing.\n", levelKey);
-            continue;
-        }
-        cJSON *freeMusicItem = cJSON_GetObjectItemCaseSensitive(segment0, "free");
-        cJSON *combatMusicItem = cJSON_GetObjectItemCaseSensitive(segment0, "combat");
-        if (!cJSON_IsString(freeMusicItem))
-        {
-            printf("Warning: Skipping level '%s' because free music is missing.\n", levelKey);
-            continue;
-        }
-        
-        // Build full paths for the thumbnail and free music
+
+        // Load thumbnail
         snprintf(levels[*levelCount].thumbnailPath, sizeof(levels[*levelCount].thumbnailPath),
                  "%s/%s/%s", baseFolder, folderItem->valuestring, thumbItem->valuestring);
-        snprintf(levels[*levelCount].musicPath, sizeof(levels[*levelCount].musicPath),
-                 "%s/%s/%s", baseFolder, folderItem->valuestring, freeMusicItem->valuestring);
-        
-        // Load thumbnail image and convert to texture.
         Image img = LoadImage(levels[*levelCount].thumbnailPath);
         if (img.data != NULL)
         {
             levels[*levelCount].thumbnail = LoadTextureFromImage(img);
             UnloadImage(img);
         }
-        else
-        {
-            printf("Warning: Could not load image: %s\n", levels[*levelCount].thumbnailPath);
-            levels[*levelCount].thumbnail = (Texture2D){ 0 };
-        }
         
-        // Load the free music stream.
-        levels[*levelCount].music = LoadMusicStream(levels[*levelCount].musicPath);
+        // Initialize segments
+        levels[*levelCount].segmentCount = 0;
+        levels[*levelCount].currentSegment = 0;
         
-        // Load the combat music stream if provided.
-        if (cJSON_IsString(combatMusicItem))
-        {
-            char combatPath[512];
-            snprintf(combatPath, sizeof(combatPath), "%s/%s/%s",
-                     baseFolder, folderItem->valuestring, combatMusicItem->valuestring);
-            levels[*levelCount].combatMusic = LoadMusicStream(combatPath);
-        }
-        else
-        {
-            levels[*levelCount].combatMusic = (Music){ 0 };
+        // Parse segments
+        cJSON *segmentEntry = NULL;
+        cJSON_ArrayForEach(segmentEntry, segments) {
+            if (levels[*levelCount].segmentCount >= MAX_SEGMENTS) break;
+            
+            cJSON *nameItem = cJSON_GetObjectItemCaseSensitive(segmentEntry, "name");
+            cJSON *freeMusicItem = cJSON_GetObjectItemCaseSensitive(segmentEntry, "free");
+            cJSON *combatMusicItem = cJSON_GetObjectItemCaseSensitive(segmentEntry, "combat");
+            
+            if (!nameItem || !freeMusicItem) continue;
+            
+            int segIdx = levels[*levelCount].segmentCount;
+            Segment *seg = &levels[*levelCount].segments[segIdx];
+            
+            strncpy(seg->name, nameItem->valuestring, sizeof(seg->name) - 1);
+            
+            char musicPath[512];
+            snprintf(musicPath, sizeof(musicPath), "%s/%s/%s",
+                     baseFolder, folderItem->valuestring, freeMusicItem->valuestring);
+            seg->free = LoadMusicStream(musicPath);
+            
+            seg->hasCombat = false;
+            if (cJSON_IsString(combatMusicItem)) {
+                snprintf(musicPath, sizeof(musicPath), "%s/%s/%s",
+                         baseFolder, folderItem->valuestring, combatMusicItem->valuestring);
+                seg->combat = LoadMusicStream(musicPath);
+                seg->hasCombat = true;
+            }
+            
+            levels[*levelCount].segmentCount++;
         }
         
         (*levelCount)++;
     }
     
     cJSON_Delete(jsonRoot);
-    return true;
+    return *levelCount > 0;
 }
 
 /* DrawTextRec: Draws text inside a rectangle with word-wrapping support.

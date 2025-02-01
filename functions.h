@@ -4,18 +4,29 @@
 #include "raylib.h"
 #include "./cjson/cJSON.h"  // Adjust path as needed
 
-#define MAX_LEVELS 20  // maximum number of levels supported
+#define MAX_LEVELS 20
+#define MAX_SEGMENTS 10
+
+//--------------------------------------------------------------------
+// Segment structure
+//--------------------------------------------------------------------
+typedef struct Segment {
+    char name[256];      // Segment name
+    Music free;          // Free music stream
+    Music combat;        // Combat music stream
+    bool hasCombat;      // Whether this segment has combat music
+} Segment;
 
 //--------------------------------------------------------------------
 // Level structure
 //--------------------------------------------------------------------
 typedef struct Level {
-    char name[256];          // Level name (taken from the JSON key)
-    char thumbnailPath[512]; // Full path to the thumbnail image
-    char musicPath[512];     // Full path to the free music track
-    Texture2D thumbnail;     // Loaded texture for thumbnail
-    Music music;             // Loaded music stream for free segment
-    Music combatMusic;       // Loaded music stream for combat segment
+    char name[256];          // Level name
+    char thumbnailPath[512]; // Thumbnail path
+    Texture2D thumbnail;     // Loaded texture
+    Segment segments[MAX_SEGMENTS]; // Array of segments
+    int segmentCount;       // Number of segments in this level
+    int currentSegment;     // Currently selected segment
 } Level;
 
 //--------------------------------------------------------------------

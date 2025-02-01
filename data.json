@@ -1,18 +1,45 @@
 {
     "base-folder": "./assets",
     "levels":{
-        "0-1: INTO THE FIRE": {
+        "Main Menu": {
+            "folder": "Main Menu",
+            "thumbnail": "default_0.png",
+            "segments": {
+                "0": {
+                    "name": "The Fire is Gone",
+                    "free": "Theme on Piano and Horns.ogg"
+                },
+                "1": {
+                    "name": "TFiG (Music Box)",
+                    "free": "Theme on Music Box.ogg"
+                },
+                "2": {
+                    "name": "TFiG (Easter)",
+                    "free": "The Fire Is Gone (Easter).ogg"
+                },
+                "3": {
+                    "name": "TFiG (Halloween)",
+                    "free": "The Fire Is Gone (Halloween).ogg"
+                },
+                "4": {
+                    "name": "TFiG (Christmas)",
+                    "free": "The Fire Is Gone (Christmas).ogg"
+                }
+            }
+        },
+        "0-1: Into the Fire": {
             "folder": "0-1",
             "thumbnail": "thumbnail.png",
             "segments": {
                 "0": {
                     "name": "INTO THE FIRE",
                     "free": "free.ogg",
-                    "combat": "combat.ogg"
+                    "combat": "combat.ogg",
+                    "intro": "intro.ogg"
                 }
             }
         },
-        "0-2: THE MEATGRINDER": {
+        "0-2: The Meatgrinder": {
             "folder": "0-2",
             "thumbnail": "thumbnail.png",
             "segments": {
@@ -23,30 +50,419 @@
                 }
             }
         },
-        "1-1: HEART OF THE SUNRISE": {
+        "0-5: Cerberus": {
+            "folder": "0-5",
+            "thumbnail": "0-5 Cerberus.png",
+            "segments": {
+                "0": {
+                    "name": "CERBERUS",
+                    "free": "Cerberus A.ogg",
+                    "combat": "Cerberus B.ogg"
+                }
+            }
+        },
+        "1-1: Heart of the Sunrise": {
             "folder": "1-1",
             "thumbnail": "thumbnail.png",
             "segments": {
                 "0": {
-                    "name": "HEART OF THE SUNRISE",
+                    "name": "A Thousand Greetings",
+                    "free": "A Thousand Greetings.ogg"
+                },
+                "1": {
+                    "name": "Combat",
                     "free": "free.ogg",
                     "combat": "combat.ogg"
                 }
             }
         },
-        "1-2: THE BURNING WORLD": {
+        "1-2: The Burning World": {
             "folder": "1-2",
             "thumbnail": "1-2 The Burning World.png",
             "segments": {
                 "0": {
+                    "name": "A Thousand Greetings",
+                    "free": "A Thousand Greetings.ogg"
+                },
+                "1": {
                     "name": "Dark",
                     "free": "1-2 Dark Clean.ogg",
                     "combat": "1-2 Dark Battle.ogg"
                 },
-                "1": {
+                "2": {
                     "name": "Noise",
                     "free": "1-2 Noise Clean.ogg",
                     "combat": "1-2 Noise Battle.ogg"
+                },
+                "3": {
+                    "name": "Cancerous Rodent",
+                    "free": "themeofcancer.ogg"
+                }
+            }
+        },
+        "1-3: Halls of Sacred Remains": {
+            "folder": "1-3",
+            "thumbnail": "1-3 Halls of Sacred Remains.png",
+            "segments": {
+                "0": {
+                    "name": "Halls of Sacred Remains",
+                    "free": "1-3 Clean.ogg",
+                    "combat": "1-3.ogg"
+                }
+            }
+        },
+        "1-4: Clair de Lune": {
+            "folder": "1-4",
+            "thumbnail": "1-4 Clair de Lune.png",
+            "segments": {
+                "0": {
+                    "name": "Clair de Lune",
+                    "free": "Clair de Lune.ogg"
+                },
+                "1": {
+                    "name": "V2 Bossfight",
+                    "free": "V2 1-4.ogg",
+                    "intro": "V2 Intro.ogg"
+                }
+            }
+        },
+        "2-1: Bridgeburner": {
+            "folder": "2-1",
+            "thumbnail": "2-1 In the Air Tonight.png",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "2-1 Clean.ogg",
+                    "combat": "2-1.ogg"
+                }
+            }
+        },
+        "2-2: Death at 20.000 Volts": {
+            "folder": "2-2",
+            "thumbnail": "2-2 Death at 20_000 Volts.png",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "2-2 Clean.ogg",
+                    "combat": "2-2.ogg"
+                }
+            }
+        },
+        "2-3: Sheer Heart Attack": {
+            "folder": "2-3",
+            "thumbnail": "2-3 Sheer Heart Attack.png",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "2-3 Clean.ogg",
+                    "combat": "2-3.ogg"
+                }
+            }
+        },
+        "2-4: Court of the Corpse King": {
+            "folder": "2-4",
+            "thumbnail": "2-4 Court of the Corpse King.png",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "Minos Corpse A.ogg",
+                    "combat": "Minos Corpse B.ogg"
+                }
+            }
+        },
+        "2-S: All-Imperfect Love Song": {
+            "folder": "2-S",
+            "thumbnail": "2-S All-Imperfect Love Song.png",
+            "segments": {
+                "0": {
+                    "name": "Anime",
+                    "free": "2-S Anime.ogg"
+                },
+                "1": {
+                    "name": "Angelic",
+                    "free": "2-S Angelic.ogg"
+                }
+            }
+        },
+        "3-1: Belly of the Beast": {
+            "folder": "3-1",
+            "thumbnail": "3-1 Belly of the Beast.png",
+            "segments": {
+                "0": {
+                    "name": "Guts",
+                    "free": "3-1 Guts Clean.ogg",
+                    "combat": "3-1 Guts.ogg"
+                },
+                "1": {
+                    "name": "Glory",
+                    "free": "3-1 Glory Clean.ogg",
+                    "combat": "3-1 Glory.ogg"
+                }
+            }
+        },
+        "3-2: In the Flesh": {
+            "folder": "3-2",
+            "thumbnail": "3-2 In the Flesh.png",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "Gabriel4.ogg"
+                }
+            }
+        },
+        "P-1: Soul Survivor": {
+            "folder": "P-1",
+            "thumbnail": "P-1 Soul Survivor.png",
+            "segments": {
+                "0": {
+                    "name": "Sourire d'avril",
+                    "free": "Sourire d'avril.ogg"
+                },
+                "1": {
+                    "name": "Minos Prime",
+                    "free": "Minos Prime.ogg",
+                    "intro": "Minos Prime Intro.ogg"
+                }
+            }
+        },
+        "4-1: Slaves to Power": {
+            "folder": "4-1",
+            "thumbnail": "4-1 Slaves to Power.png",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "4-1 Clean.ogg",
+                    "combat": "4-1.ogg"
+                }
+            }
+        },
+        "4-2: God Damn the Sun": {
+            "folder": "4-2",
+            "thumbnail": "4-2 God Damn the Sun.png",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "4-2 CLean.ogg",
+                    "combat": "4-2.ogg"
+                }
+            }
+        },
+        "4-3: A Shot in the Dark": {
+            "folder": "4-3",
+            "thumbnail": "4-3 A Shot in the Dark.png",
+            "segments": {
+                "0": {
+                    "name": "Phase 1",
+                    "free": "4-3 Phase 1 Clean.ogg",
+                    "combat": "4-3 Phase 1.ogg"
+                },
+                "1": {
+                    "name": "Phase 2",
+                    "free": "4-3 Phase 2 Clean.ogg",
+                    "combat": "4-3 Phase 2.ogg"
+                },
+                "2": {
+                    "name": "Phase 3",
+                    "free": "4-3 Phase 3.ogg"
+                }
+            }
+        },
+        "4-4: Clair de Soleil": {
+            "folder": "4-4",
+            "thumbnail": "4-4 Clair de Soleil.png",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "V2 4-4.ogg",
+                    "intro": "V2 Intro.ogg",
+                    "outro": "Versus2Outro.ogg"
+                }
+            }
+        },
+        "4-S: Clash of the Brandicoot": {
+            "folder": "4-S",
+            "thumbnail": "4-S Clash of the Brandicoot.png",
+            "segments": {
+                "0": {
+                    "name": "4-S A",
+                    "free": "4-S A.ogg"
+                },
+                "1": {
+                    "name": "4-S B",
+                    "free": "4-S B.ogg"
+                },
+                "2": {
+                    "name": "4-S C",
+                    "free": "4-S C.ogg"
+                },
+                "3": {
+                    "name": "4-S D",
+                    "free": "4-S D.ogg"
+                }
+            }
+        },
+        "5-1": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "5-2": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "5-3": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "5-4": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "5-S": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "6-1": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "P-2": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "7-1": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "7-2": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "7-3": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "7-4": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "7-S": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "Cybergrind": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "Misc": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
+                }
+            }
+        },
+        "Museum": {
+            "folder": "",
+            "thumbnail": "",
+            "segments": {
+                "0": {
+                    "name": "",
+                    "free": "",
+                    "combat": ""
                 }
             }
         }
