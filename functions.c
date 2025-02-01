@@ -4,8 +4,7 @@
 #include <string.h>
 #include "./cjson/cJSON.c"
 
-char *LoadFileTextCustom(const char *fileName)
-{
+char *LoadFileTextCustom(const char *fileName) {
     FILE *file = fopen(fileName, "rb");
     if (!file) return NULL;
     
@@ -14,8 +13,7 @@ char *LoadFileTextCustom(const char *fileName)
     rewind(file);
     
     char *text = (char *)malloc(size + 1);
-    if (text)
-    {
+    if (text) {
         fread(text, 1, size, file);
         text[size] = '\0';
     }
@@ -23,9 +21,8 @@ char *LoadFileTextCustom(const char *fileName)
     return text;
 }
 
-bool ParseJSONData(const char *jsonFileName, Level levels[], int *levelCount)
-{
-    char *jsonText = LoadFileTextCustom(jsonFileName);
+bool ParseJSONData(const char *jsonFileName, Level levels[], int *levelCount) {
+char *jsonText = LoadFileTextCustom(jsonFileName);
     if (jsonText == NULL)
     {
         printf("Error: Unable to open %s\n", jsonFileName);
@@ -115,13 +112,18 @@ bool ParseJSONData(const char *jsonFileName, Level levels[], int *levelCount)
             snprintf(musicPath, sizeof(musicPath), "%s/%s/%s",
                      baseFolder, folderItem->valuestring, freeMusicItem->valuestring);
             seg->free = LoadMusicStream(musicPath);
-            
-            seg->hasCombat = false;
+            if (seg->free.ctxData == NULL) {
+                printf("Failed to load music: %s\n", musicPath);
+            }
             if (cJSON_IsString(combatMusicItem)) {
                 snprintf(musicPath, sizeof(musicPath), "%s/%s/%s",
-                         baseFolder, folderItem->valuestring, combatMusicItem->valuestring);
+                        baseFolder, folderItem->valuestring, combatMusicItem->valuestring);
                 seg->combat = LoadMusicStream(musicPath);
                 seg->hasCombat = true;
+                
+                if (seg->combat.ctxData == NULL) {
+                    printf("Failed to load combat music: %s\n", musicPath);
+                }
             }
             
             levels[*levelCount].segmentCount++;
@@ -132,22 +134,9 @@ bool ParseJSONData(const char *jsonFileName, Level levels[], int *levelCount)
     
     cJSON_Delete(jsonRoot);
     return *levelCount > 0;
-}
+    }
 
-/* DrawTextRec: Draws text inside a rectangle with word-wrapping support.
-   This is a simple implementation that splits the text into words and
-   draws as many words per line as will fit in the given rectangle.
-   Parameters:
-     - font: the Font to use.
-     - text: the text to draw.
-     - rec: the rectangle inside which to draw the text.
-     - fontSize: desired font size.
-     - spacing: extra spacing between lines.
-     - wordWrap: if true, word wrap the text; otherwise, draw as a single line.
-     - tint: the color tint for the text.
-*/
-void DrawTextRec(Font font, const char *text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint)
-{
+void DrawTextRec(Font font, const char *text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint) {
     // If wordWrap is false, simply draw the text and return.
     if (!wordWrap)
     {
@@ -232,4 +221,76 @@ void DrawTextRec(Font font, const char *text, Rectangle rec, float fontSize, flo
     {
         DrawTextEx(font, lineBuffer, (Vector2){ rec.x, posY }, fontSize, spacing, tint);
     }
+    }
+
+// Button implementation
+Button CreateTextButton(Rectangle bounds, const char *text, Color color, Color hoverColor, Color borderColor, Font font, float fontSize, float spacing, bool wordWrap) {
+    return (Button){
+        .bounds = bounds,
+        .text = text,
+        .color = color,
+        .hoverColor = hoverColor,
+        .borderColor = borderColor,
+        .font = font,
+        .fontSize = fontSize,
+        .spacing = spacing,
+        .wordWrap = wordWrap,
+        .texture.id = 0
+    };
+}
+
+Button CreateImageButton(Rectangle bounds, Texture2D texture, float textureScale, const char *text, Color color, Color hoverColor, Color borderColor, Font font, float fontSize, float spacing, bool wordWrap, Rectangle textRec) {
+    return (Button){
+        .bounds = bounds,
+        .texture = texture,
+        .textureScale = textureScale,
+        .text = text,
+        .color = color,
+        .hoverColor = hoverColor,
+        .borderColor = borderColor,
+        .font = font,
+        .fontSize = fontSize,
+        .spacing = spacing,
+        .wordWrap = wordWrap,
+        .textRec = textRec
+    };
+}
+
+void DrawButton(Button *button) {
+    // Draw background
+    DrawRectangleRec(button->bounds, button->isHovered ? button->hoverColor : button->color);
+    
+    // Draw border
+    DrawRectangleLinesEx(button->bounds, 1, button->borderColor);
+    
+    // Draw texture
+    if (button->texture.id != 0) {
+        Vector2 pos = {
+            button->bounds.x + (button->bounds.width - button->texture.width*button->textureScale)/2,
+            button->bounds.y + 10
+        };
+        DrawTextureEx(button->texture, pos, 0.0f, button->textureScale, WHITE);
+    }
+    
+    // Draw text
+    if (button->text != NULL) {
+        if (button->wordWrap) {
+            DrawTextRec(button->font, button->text, button->textRec, button->fontSize, button->spacing, true, WHITE);
+        }
+        else {
+            Vector2 textPos = {
+                button->bounds.x + (button->bounds.width - MeasureText(button->text, button->fontSize))/2,
+                button->bounds.y + (button->bounds.height - button->fontSize)/2
+            };
+            DrawTextEx(button->font, button->text, textPos, button->fontSize, button->spacing, WHITE);
+        }
+    }
+}
+
+bool IsButtonHovered(Button button, Vector2 mousePoint) {
+    return CheckCollisionPointRec(mousePoint, button.bounds);
+}
+
+bool IsButtonClicked(Button button, Vector2 mousePoint) {
+    return IsButtonHovered(button, mousePoint) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 }

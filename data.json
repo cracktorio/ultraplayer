@@ -301,80 +301,135 @@
                 }
             }
         },
-        "5-1": {
-            "folder": "",
-            "thumbnail": "",
+        "5-1: In the Wake of Poseidon": {
+            "folder": "5-1",
+            "thumbnail": "5-1 In the Wake of Poseidon.png",
             "segments": {
                 "0": {
                     "name": "",
-                    "free": "",
-                    "combat": ""
+                    "free": "5-1 Clean.ogg",
+                    "combat": "5-1.ogg"
                 }
             }
         },
-        "5-2": {
-            "folder": "",
-            "thumbnail": "",
+        "5-2: Waves of the Starless Sea": {
+            "folder": "5-2",
+            "thumbnail": "5-2 Waves of the Starless Sea.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "Ferryman A",
+                    "free": "Ferryman A.ogg",
+                    "intro": "Ferryman Intro.ogg"
+                },
+                "1": {
+                    "name": "Ferryman B",
+                    "free": "Ferryman B.ogg"
+                },
+                "2": {
+                    "name": "Ferryman C",
+                    "free": "Ferryman C.ogg"
                 }
             }
         },
-        "5-3": {
-            "folder": "",
-            "thumbnail": "",
+        "5-3: Ship of Fools": {
+            "folder": "5-3",
+            "thumbnail": "5-3 Ship of Fools.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "Main",
+                    "free": "5-3 Clean.ogg",
+                    "combat": "5-3.ogg"
+                },
+                "1": {
+                    "name": "Aftermath",
+                    "free": "5-3 Aftermath Clean.ogg",
+                    "combat": "5-3 Aftermath.ogg",
+                    "intro": "5-3 Aftermath Intro.ogg"
                 }
             }
         },
-        "5-4": {
-            "folder": "",
-            "thumbnail": "",
+        "5-4: Leviathan": {
+            "folder": "5-4",
+            "thumbnail": "5-4 Leviathan.png",
             "segments": {
                 "0": {
                     "name": "",
-                    "free": "",
-                    "combat": ""
+                    "free": "Leviathan A.ogg",
+                    "combat": "Leviathan B.ogg"
                 }
             }
         },
-        "5-S": {
-            "folder": "",
-            "thumbnail": "",
+        "5-S: I Only Say Morning": {
+            "folder": "5-S",
+            "thumbnail": "5-S I Only Say Morning.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "5-S A",
+                    "free": "5-S A.ogg"
+                },
+                "1": {
+                    "name": "5-S B",
+                    "free": "5-S B.ogg"
+                },
+                "2": {
+                    "name": "5-S C",
+                    "free": "5-S C.ogg"
+                },
+                "3": {
+                    "name": "5-S D",
+                    "free": "5-S D.ogg"
+                },
+                "4": {
+                    "name": "5-S E",
+                    "free": "5-S E.ogg"
                 }
             }
         },
-        "6-1": {
-            "folder": "",
-            "thumbnail": "",
+        "6-1: Cry for the Weeper": {
+            "folder": "6-1",
+            "thumbnail": "6-1 Cry for the Weeper.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "Chord",
+                    "free": "6-1 Chord Loop.ogg"
+                },
+                "1": {
+                    "name": "Main",
+                    "free": "6-1 Clean.ogg",
+                    "combat": "6-1.ogg"
+                },
+                "2": {
+                    "name": "Hall of Sacreligious Remains",
+                    "free": "6-1 Hall of Sacreligious Remains.ogg"
+                }
+            }
+        },
+        "6-2: Aesthetics of Hate": {
+            "folder": "6-2",
+            "thumbnail": "6-2 Aesthetics of Hate.png",
+            "segments": {
+                "0": {
+                    "name": "Fallen Angel",
+                    "free": "Fallen Angel Intro Long.ogg"
+                },
+                "1": {
+                    "name": "Main",
+                    "free": "Gabriel 6-2.ogg"
                 }
             }
         },
         "P-2": {
-            "folder": "",
-            "thumbnail": "",
+            "folder": "P-2",
+            "thumbnail": "P-2 Wait of the World.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "Main",
+                    "free": "P-2 Clean.ogg",
+                    "combat": "P-2.ogg"
+                },
+                "1": {
+                    "name": "Sisyphus Prime",
+                    "free": "Sisyphus Prime.ogg"
                 }
             }
         },

@@ -2,53 +2,52 @@
 #define FUNCTIONS_H
 
 #include "raylib.h"
-#include "./cjson/cJSON.h"  // Adjust path as needed
+#include "./cjson/cJSON.h"
 
-#define MAX_LEVELS 20
+#define MAX_LEVELS 50
 #define MAX_SEGMENTS 10
 
-//--------------------------------------------------------------------
-// Segment structure
-//--------------------------------------------------------------------
 typedef struct Segment {
-    char name[256];      // Segment name
-    Music free;          // Free music stream
-    Music combat;        // Combat music stream
-    bool hasCombat;      // Whether this segment has combat music
+    char name[256];
+    Music free;
+    Music combat;
+    bool hasCombat;
 } Segment;
 
-//--------------------------------------------------------------------
-// Level structure
-//--------------------------------------------------------------------
 typedef struct Level {
-    char name[256];          // Level name
-    char thumbnailPath[512]; // Thumbnail path
-    Texture2D thumbnail;     // Loaded texture
-    Segment segments[MAX_SEGMENTS]; // Array of segments
-    int segmentCount;       // Number of segments in this level
-    int currentSegment;     // Currently selected segment
+    char name[256];
+    char thumbnailPath[512];
+    Texture2D thumbnail;
+    Segment segments[MAX_SEGMENTS];
+    int segmentCount;
+    int currentSegment;
 } Level;
 
-//--------------------------------------------------------------------
-// Function declarations
-//--------------------------------------------------------------------
-/* Load the entire contents of a file into a dynamically allocated string.
-   Caller is responsible for freeing the returned string. */
+typedef struct Button {
+    Rectangle bounds;
+    const char *text;
+    Texture2D texture;
+    Color color;
+    Color hoverColor;
+    Color borderColor;
+    bool isHovered;
+    bool wordWrap;
+    Font font;
+    float fontSize;
+    float spacing;
+    Rectangle textRec;
+    float textureScale;
+} Button;
+
 char *LoadFileTextCustom(const char *fileName);
-
-/* Parse the JSON data from a file and populate the levels array.
-   Returns true if successful; false otherwise.
-   levelCount is updated to the number of levels loaded. */
 bool ParseJSONData(const char *jsonFileName, Level levels[], int *levelCount);
-
-/* Draw text inside a rectangle with word-wrapping support.
-   - font: the Font to use
-   - text: the text to draw
-   - rec: the rectangle inside which to draw the text
-   - fontSize: the desired font size
-   - spacing: additional spacing between lines
-   - wordWrap: if true, auto-wrap words; if false, no wrapping
-   - tint: the color tint of the text */
 void DrawTextRec(Font font, const char *text, Rectangle rec, float fontSize, float spacing, bool wordWrap, Color tint);
 
-#endif // FUNCTIONS_H
+// Button functions
+Button CreateTextButton(Rectangle bounds, const char *text, Color color, Color hoverColor, Color borderColor, Font font, float fontSize, float spacing, bool wordWrap);
+Button CreateImageButton(Rectangle bounds, Texture2D texture, float textureScale, const char *text, Color color, Color hoverColor, Color borderColor, Font font, float fontSize, float spacing, bool wordWrap, Rectangle textRec);
+void DrawButton(Button *button);
+bool IsButtonHovered(Button button, Vector2 mousePoint);
+bool IsButtonClicked(Button button, Vector2 mousePoint);
+
+#endif
