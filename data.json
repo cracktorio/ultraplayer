@@ -1,5 +1,16 @@
 {
     "base-folder": "./assets",
+    "layers": {
+      "L0": "Overture: THE MOUTH OF HELL",
+      "L1": "Layer 1: LIMBO",
+      "L2": "Layer 2: LUST",
+      "L3": "Layer 3: GLUTTONY",
+      "L4": "Layer 4: GREED",
+      "L5": "Layer 5: WRATH",
+      "L6": "Layer 6: HERESY",
+      "L7": "Layer 7: VIOLENCE",
+      "NONE": "No Layer"
+    },
     "levels":{
         "Main Menu": {
             "folder": "Main Menu",
@@ -25,7 +36,8 @@
                     "name": "TFiG (Christmas)",
                     "free": "The Fire Is Gone (Christmas).ogg"
                 }
-            }
+            },
+            "layer": "NONE"
         },
         "0-1: Into the Fire": {
             "folder": "0-1",
@@ -37,7 +49,8 @@
                     "combat": "combat.ogg",
                     "intro": "intro.ogg"
                 }
-            }
+            },
+            "layer": "L0"
         },
         "0-2: The Meatgrinder": {
             "folder": "0-2",
@@ -48,7 +61,8 @@
                     "free": "free.ogg",
                     "combat": "combat.ogg"
                 }
-            }
+            },
+            "layer": "L0"
         },
         "0-5: Cerberus": {
             "folder": "0-5",
@@ -59,7 +73,8 @@
                     "free": "Cerberus A.ogg",
                     "combat": "Cerberus B.ogg"
                 }
-            }
+            },
+            "layer": "L0"
         },
         "1-1: Heart of the Sunrise": {
             "folder": "1-1",
@@ -74,7 +89,8 @@
                     "free": "free.ogg",
                     "combat": "combat.ogg"
                 }
-            }
+            },
+            "layer": "L1"
         },
         "1-2: The Burning World": {
             "folder": "1-2",
@@ -98,7 +114,8 @@
                     "name": "Cancerous Rodent",
                     "free": "themeofcancer.ogg"
                 }
-            }
+            },
+            "layer": "L1"
         },
         "1-3: Halls of Sacred Remains": {
             "folder": "1-3",
@@ -109,7 +126,8 @@
                     "free": "1-3 Clean.ogg",
                     "combat": "1-3.ogg"
                 }
-            }
+            },
+            "layer": "L1"
         },
         "1-4: Clair de Lune": {
             "folder": "1-4",
@@ -124,7 +142,8 @@
                     "free": "V2 1-4.ogg",
                     "intro": "V2 Intro.ogg"
                 }
-            }
+            },
+            "layer": "L1"
         },
         "2-1: Bridgeburner": {
             "folder": "2-1",
@@ -135,7 +154,8 @@
                     "free": "2-1 Clean.ogg",
                     "combat": "2-1.ogg"
                 }
-            }
+            },
+            "layer": "L2"
         },
         "2-2: Death at 20.000 Volts": {
             "folder": "2-2",
@@ -146,7 +166,8 @@
                     "free": "2-2 Clean.ogg",
                     "combat": "2-2.ogg"
                 }
-            }
+            },
+            "layer": "L2"
         },
         "2-3: Sheer Heart Attack": {
             "folder": "2-3",
@@ -157,7 +178,8 @@
                     "free": "2-3 Clean.ogg",
                     "combat": "2-3.ogg"
                 }
-            }
+            },
+            "layer": "L2"
         },
         "2-4: Court of the Corpse King": {
             "folder": "2-4",
@@ -168,7 +190,8 @@
                     "free": "Minos Corpse A.ogg",
                     "combat": "Minos Corpse B.ogg"
                 }
-            }
+            },
+            "layer": "L2"
         },
         "2-S: All-Imperfect Love Song": {
             "folder": "2-S",
@@ -182,7 +205,8 @@
                     "name": "Angelic",
                     "free": "2-S Angelic.ogg"
                 }
-            }
+            },
+            "layer": "L2"
         },
         "3-1: Belly of the Beast": {
             "folder": "3-1",
@@ -198,7 +222,8 @@
                     "free": "3-1 Glory Clean.ogg",
                     "combat": "3-1 Glory.ogg"
                 }
-            }
+            },
+            "layer": "L3"
         },
         "3-2: In the Flesh": {
             "folder": "3-2",
@@ -208,7 +233,8 @@
                     "name": "",
                     "free": "Gabriel4.ogg"
                 }
-            }
+            },
+            "layer": "L3"
         },
         "P-1: Soul Survivor": {
             "folder": "P-1",
@@ -223,7 +249,8 @@
                     "free": "Minos Prime.ogg",
                     "intro": "Minos Prime Intro.ogg"
                 }
-            }
+            },
+            "layer": "NONE"
         },
         "4-1: Slaves to Power": {
             "folder": "4-1",
@@ -234,7 +261,8 @@
                     "free": "4-1 Clean.ogg",
                     "combat": "4-1.ogg"
                 }
-            }
+            },
+            "layer": "L4"
         },
         "4-2: God Damn the Sun": {
             "folder": "4-2",
@@ -245,7 +273,8 @@
                     "free": "4-2 CLean.ogg",
                     "combat": "4-2.ogg"
                 }
-            }
+            },
+            "layer": "L4"
         },
         "4-3: A Shot in the Dark": {
             "folder": "4-3",
@@ -265,7 +294,8 @@
                     "name": "Phase 3",
                     "free": "4-3 Phase 3.ogg"
                 }
-            }
+            },
+            "layer": "L4"
         },
         "4-4: Clair de Soleil": {
             "folder": "4-4",
@@ -277,7 +307,8 @@
                     "intro": "V2 Intro.ogg",
                     "outro": "Versus2Outro.ogg"
                 }
-            }
+            },
+            "layer": "L4"
         },
         "4-S: Clash of the Brandicoot": {
             "folder": "4-S",
@@ -299,7 +330,8 @@
                     "name": "4-S D",
                     "free": "4-S D.ogg"
                 }
-            }
+            },
+            "layer": "L4"
         },
         "5-1: In the Wake of Poseidon": {
             "folder": "5-1",
@@ -310,7 +342,8 @@
                     "free": "5-1 Clean.ogg",
                     "combat": "5-1.ogg"
                 }
-            }
+            },
+            "layer": "L5"
         },
         "5-2: Waves of the Starless Sea": {
             "folder": "5-2",
@@ -329,7 +362,8 @@
                     "name": "Ferryman C",
                     "free": "Ferryman C.ogg"
                 }
-            }
+            },
+            "layer": "L5"
         },
         "5-3: Ship of Fools": {
             "folder": "5-3",
@@ -346,7 +380,8 @@
                     "combat": "5-3 Aftermath.ogg",
                     "intro": "5-3 Aftermath Intro.ogg"
                 }
-            }
+            },
+            "layer": "L5"
         },
         "5-4: Leviathan": {
             "folder": "5-4",
@@ -357,7 +392,8 @@
                     "free": "Leviathan A.ogg",
                     "combat": "Leviathan B.ogg"
                 }
-            }
+            },
+            "layer": "L5"
         },
         "5-S: I Only Say Morning": {
             "folder": "5-S",
@@ -383,7 +419,8 @@
                     "name": "5-S E",
                     "free": "5-S E.ogg"
                 }
-            }
+            },
+            "layer": "L5"
         },
         "6-1: Cry for the Weeper": {
             "folder": "6-1",
@@ -402,7 +439,8 @@
                     "name": "Hall of Sacreligious Remains",
                     "free": "6-1 Hall of Sacreligious Remains.ogg"
                 }
-            }
+            },
+            "layer": "L6"
         },
         "6-2: Aesthetics of Hate": {
             "folder": "6-2",
@@ -416,9 +454,10 @@
                     "name": "Main",
                     "free": "Gabriel 6-2.ogg"
                 }
-            }
+            },
+            "layer": "L6"
         },
-        "P-2": {
+        "P-2: Wait of the World": {
             "folder": "P-2",
             "thumbnail": "P-2 Wait of the World.png",
             "segments": {
@@ -431,95 +470,158 @@
                     "name": "Sisyphus Prime",
                     "free": "Sisyphus Prime.ogg"
                 }
-            }
+            },
+            "layer": "NONE"
         },
-        "7-1": {
-            "folder": "",
-            "thumbnail": "",
+        "7-1: Garden of Forking Paths": {
+            "folder": "7-1",
+            "thumbnail": "7-1 Garden of Forking Paths.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "Main",
+                    "free": "7-1 Clean.ogg",
+                    "combat": "7-1.ogg",
+                    "intro": "7-1 Intro.ogg"
+                },
+                "1": {
+                    "name": "Minotaur",
+                    "free": "Minotaur A.ogg",
+                    "combat": "Minotaur B.ogg",
+                    "intro": "Minotaur Intro.ogg"
                 }
-            }
+            },
+            "layer": "L7"
         },
-        "7-2": {
-            "folder": "",
-            "thumbnail": "",
+        "7-2: Light up the Night": {
+            "folder": "7-2",
+            "thumbnail": "7-2 Light Up the Night.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "Intro",
+                    "free": "7-2 Intro.ogg"
+                },
+                "1": {
+                    "name": "Intro 2",
+                    "free": "7-2 Intro Clean.ogg",
+                    "combat": "7-2 Intro Battle.ogg"
+                },
+                "3": {
+                    "name": "Main",
+                    "free": "7-2 Clean.ogg",
+                    "combat": "7-2.ogg"
                 }
-            }
+            },
+            "layer": "L7"
         },
-        "7-3": {
-            "folder": "",
-            "thumbnail": "",
+        "7-3: No Sound no Memory": {
+            "folder": "7-3",
+            "thumbnail": "7-3 No Sound No Memory.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "Intro",
+                    "free": "7-3 Intro Clean.ogg"
+                },
+                "1": {
+                    "name": "Main",
+                    "free": "7-3 Clean.ogg",
+                    "combat": "7-3.ogg"
                 }
-            }
+            },
+            "layer": "L7"
         },
-        "7-4": {
-            "folder": "",
-            "thumbnail": "",
+        "7-4: Like Antennas to Heaven": {
+            "folder": "7-4",
+            "thumbnail": "7-4 Like Antennas to Heaven.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "Centaur 1",
+                    "free": "Centaur A-1.ogg",
+                    "combat": "Centaur B-1.ogg"
+                },
+                "1": {
+                    "name": "Centaur 2",
+                    "free": "Centaur A-2.ogg",
+                    "combat": "Centaur B-2.ogg"
+                },
+                "2": {
+                    "name": "Centaur 3",
+                    "free": "Centaur A-3.ogg",
+                    "combat": "Centaur B-3.ogg"
+                },
+                "3": {
+                    "name": "Centaur 4",
+                    "free": "Centaur A-4.ogg",
+                    "combat": "Centaur B-4.ogg"
+                },
+                "4": {
+                    "name": "Centaur 5",
+                    "free": "Centaur A-5.ogg",
+                    "combat": "Centaur B-5.ogg"
+                },
+                "5": {
+                    "name": "Centaur 6",
+                    "free": "Centaur A-6.ogg",
+                    "combat": "Centaur B-6.ogg"
                 }
-            }
+            },
+            "layer": "L7"
         },
-        "7-S": {
-            "folder": "",
-            "thumbnail": "",
+        "7-S: Hell Bath no Fury": {
+            "folder": "7-S",
+            "thumbnail": "7-S Hell Bath No Fury.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "Main",
+                    "free": "7-S.ogg"
                 }
-            }
+            },
+            "layer": "L7"
         },
         "Cybergrind": {
-            "folder": "",
-            "thumbnail": "",
+            "folder": "CyberGrind",
+            "thumbnail": "meganeko.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "The Cyber Grind",
+                    "free": "The Cyber Grind - Final Version 1 (seamless loop without intro).ogg",
+                    "intro": "The Cyber Grind - Final Version 1 (Intro only).ogg"
+                },
+                "1": {
+                    "name": "HATEFUL",
+                    "free": "HEALTH - HATEFUL (Instrumental).ogg",
+                    "combat": "HEALTH - HATEFUL (Loop).ogg",
+                    "intro": "HEALTH - HATEFUL (Intro).ogg"
+                },
+                "2": {
+                    "name": "ULTRACHURCH",
+                    "free": "ULTRACHURCH (Loop).ogg",
+                    "intro": "ULTRACHURCH (Intro).ogg"
                 }
-            }
-        },
-        "Misc": {
-            "folder": "",
-            "thumbnail": "",
-            "segments": {
-                "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
-                }
-            }
+            },
+            "layer": "NONE"
         },
         "Museum": {
-            "folder": "",
-            "thumbnail": "",
+            "folder": "Museum",
+            "thumbnail": "Developer Museum.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "",
-                    "combat": ""
+                    "name": "Music for Virtual Museums 1",
+                    "free": "MusicForVirtualMuseums1.ogg"
+                },
+                "1": {
+                    "name": "Music for Virtual Museums 2",
+                    "free": "MusicForVirtualMuseums2.ogg"
+                },
+                "2": {
+                    "name": "Music for Virtual Museums 3",
+                    "free": "MusicForVirtualMuseums3.ogg"
+                },
+                "3": {
+                    "name": "Music for Virtual Museums 4",
+                    "free": "MusicForVirtualMuseums4.ogg"
                 }
-            }
+            },
+            "layer": "NONE"
         }
     }
 }
