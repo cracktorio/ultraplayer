@@ -20,8 +20,16 @@ Support for segments:
 - Levels with name and thumbnail
 - Each level has segments
 - Each segment has a base loop and an optional combat loop
+- Repeat song or play in chronological order
+- Keyboard controls
 - Built in Raylib
 
+### Controls
+pause: `space`  
+switch combat/peaceful: `c`  
+repeat: `r`  
+next: `arrow right`  
+previous: `arrow left`  
 
 ## Building
 **There is no need to recompile if you just want to change the `data.json`!**
