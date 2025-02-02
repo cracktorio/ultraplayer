@@ -56,12 +56,14 @@ typedef struct AppState {
     Button pauseBtn;
     Button combatBtn;
     Button segmentBtn;
+    Button repeatBtn;
     Level levels[MAX_LEVELS];
     int levelCount;
     int currentPlaying;
     bool isPaused;
     bool persistentCombat;
     bool showSegmentMenu;
+    bool repeatSegment;
     float scrollY;
     int buttonsPerRow;
     int startX;
@@ -81,5 +83,17 @@ bool IsButtonClicked(Button button, Vector2 mousePoint);
 
 void InitializeButtons(AppState *state, int screenWidth, int screenHeight);
 void HandleSegmentMenu(AppState *state);
+
+// Navigation functions
+void GetNextSegment(AppState *state, Level *currentLevel, bool *levelChanged);
+int GetNextLevelIndex(AppState *state);
+
+// Add after other function declarations
+void HandleMusicTransition(AppState *state, Level *currentLevel, Level *newLevel, int newSegment);
+
+// Add new function declarations
+void HandleMusicEnd(AppState *state);
+void RestartCurrentSegment(AppState *state);
+void HandleMusicPause(AppState *state);
 
 #endif

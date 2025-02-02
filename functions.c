@@ -114,16 +114,17 @@ char *jsonText = LoadFileTextCustom(jsonFileName);
             seg->free = LoadMusicStream(musicPath);
             if (seg->free.ctxData == NULL) {
                 printf("Failed to load music: %s\n", musicPath);
+            } else {
+                seg->free.looping = false;
             }
             if (cJSON_IsString(combatMusicItem)) {
                 snprintf(musicPath, sizeof(musicPath), "%s/%s/%s",
                         baseFolder, folderItem->valuestring, combatMusicItem->valuestring);
                 seg->combat = LoadMusicStream(musicPath);
-                seg->hasCombat = true;
-                
-                if (seg->combat.ctxData == NULL) {
-                    printf("Failed to load combat music: %s\n", musicPath);
+                if (seg->combat.ctxData != NULL) {
+                    seg->combat.looping = false;
                 }
+                seg->hasCombat = true;
             }
             
             levels[*levelCount].segmentCount++;
@@ -312,6 +313,11 @@ void InitializeButtons(AppState *state, int screenWidth, int screenHeight) {
         "Segments", GRAY, LIGHTGRAY, BLACK, GetFontDefault(), FONT_SIZE_SMALL, 1.0f, false
     );
 
+    state->repeatBtn = CreateTextButton(
+        (Rectangle){screenWidth - 240, screenHeight - CONTROL_PANEL_HEIGHT + FONT_SIZE_SMALL, 100, 30},
+        "Repeat", GRAY, LIGHTGRAY, BLACK, GetFontDefault(), FONT_SIZE_SMALL, 1.0f, false
+    );
+
     // Progress bar
     state->progressBar = (Rectangle){250, screenHeight - CONTROL_PANEL_HEIGHT + 20, 400, FONT_SIZE_SMALL};
 }
@@ -383,5 +389,110 @@ void HandleSegmentMenu(AppState *state) {
             }
             state->showSegmentMenu = false;
         }
+    }
+}
+
+void GetNextSegment(AppState *state, Level *currentLevel, bool *levelChanged) {
+    *levelChanged = false;
+    
+    // If we're at the last segment of current level
+    if (currentLevel->currentSegment >= currentLevel->segmentCount - 1) {
+        // Try to move to next level
+        int nextLevelIndex = GetNextLevelIndex(state);
+        if (nextLevelIndex != -1) {
+            state->currentPlaying = nextLevelIndex;
+            state->levels[nextLevelIndex].currentSegment = 0;
+            *levelChanged = true;
+        }
+    } else {
+        // Just move to next segment
+        currentLevel->currentSegment++;
+    }
+}
+
+int GetNextLevelIndex(AppState *state) {
+    if (state->currentPlaying >= state->levelCount - 1) {
+        return -1; // No next level available
+    }
+    return state->currentPlaying + 1;
+}
+
+void HandleMusicTransition(AppState *state, Level *currentLevel, Level *newLevel, int newSegment) {
+    // Stop current music
+    Segment *oldSeg = &currentLevel->segments[currentLevel->currentSegment];
+    StopMusicStream(oldSeg->free);
+    if (oldSeg->hasCombat) StopMusicStream(oldSeg->combat);
+
+    // Start new music
+    newLevel->currentSegment = newSegment;
+    Segment *newSeg = &newLevel->segments[newSegment];
+    
+    // Make sure looping is disabled and play
+    newSeg->free.looping = false;
+    PlayMusicStream(newSeg->free);
+    
+    if (newSeg->hasCombat) {
+        newSeg->combat.looping = false;
+        PlayMusicStream(newSeg->combat);
+        SetMusicVolume(newSeg->free, state->persistentCombat ? 0.0f : 1.0f);
+        SetMusicVolume(newSeg->combat, state->persistentCombat ? 1.0f : 0.0f);
+    }
+    
+    state->showSegmentMenu = false;
+}
+
+void HandleMusicEnd(AppState *state) {
+    if (state->currentPlaying == -1) return;
+    
+    Level *currentLevel = &state->levels[state->currentPlaying];
+    Segment *currentSeg = &currentLevel->segments[currentLevel->currentSegment];
+    
+    // Check if music has ended
+    if (!IsMusicStreamPlaying(currentSeg->free) && state->isPaused == false) {
+        printf("Music ended!\n");
+        if (state->repeatSegment) {
+            RestartCurrentSegment(state);
+        } else {
+            bool levelChanged = false;
+            GetNextSegment(state, currentLevel, &levelChanged);
+            
+            if (levelChanged) {
+                HandleMusicTransition(state, currentLevel, 
+                                   &state->levels[state->currentPlaying], 0);
+            } else if (currentLevel->currentSegment < currentLevel->segmentCount) {
+                HandleMusicTransition(state, currentLevel, 
+                                   currentLevel, currentLevel->currentSegment);
+            }
+        }
+    }
+}
+
+void RestartCurrentSegment(AppState *state) {
+    if (state->currentPlaying == -1) return;
+    
+    Level *currentLevel = &state->levels[state->currentPlaying];
+    Segment *currentSeg = &currentLevel->segments[currentLevel->currentSegment];
+    
+    StopMusicStream(currentSeg->free);
+    PlayMusicStream(currentSeg->free);
+    
+    if (currentSeg->hasCombat) {
+        StopMusicStream(currentSeg->combat);
+        PlayMusicStream(currentSeg->combat);
+        SetMusicVolume(currentSeg->free, state->persistentCombat ? 0.0f : 1.0f);
+        SetMusicVolume(currentSeg->combat, state->persistentCombat ? 1.0f : 0.0f);
+    }
+}
+
+void HandleMusicPause(AppState *state) {
+    if (state->currentPlaying == -1) return;
+    
+    Segment *currentSeg = &state->levels[state->currentPlaying].segments[state->levels[state->currentPlaying].currentSegment];
+    if (state->isPaused) {
+        PauseMusicStream(currentSeg->free);
+        if (currentSeg->hasCombat) PauseMusicStream(currentSeg->combat);
+    } else {
+        ResumeMusicStream(currentSeg->free);
+        if (currentSeg->hasCombat) ResumeMusicStream(currentSeg->combat);
     }
 }

@@ -37,6 +37,64 @@ int main(void) {
 
     while (!WindowShouldClose()) {
         Vector2 mousePoint = GetMousePosition();
+        
+        if (state.currentPlaying != -1) {
+            // Check for music end and handle repeat/continue
+            HandleMusicEnd(&state);
+            
+            // Add keyboard controls after mousePoint definition
+            Level *currentLevel = &state.levels[state.currentPlaying];
+            Segment *currentSeg = &currentLevel->segments[currentLevel->currentSegment];
+            
+            // Space to toggle pause
+            if (IsKeyPressed(KEY_SPACE)) {
+                state.isPaused = !state.isPaused;
+                HandleMusicPause(&state);
+            }
+            
+            // C to toggle combat music
+            if (IsKeyPressed(KEY_C) && currentSeg->hasCombat) {
+                state.persistentCombat = !state.persistentCombat;
+                SetMusicVolume(currentSeg->free, state.persistentCombat ? 0.0f : 1.0f);
+                SetMusicVolume(currentSeg->combat, state.persistentCombat ? 1.0f : 0.0f);
+            }
+
+            // Right arrow - next segment/level
+            if (IsKeyPressed(KEY_RIGHT)) {
+                bool levelChanged = false;
+                GetNextSegment(&state, currentLevel, &levelChanged);
+                
+                if (levelChanged) {
+                    HandleMusicTransition(&state, currentLevel, 
+                                       &state.levels[state.currentPlaying], 0);
+                } else if (currentLevel->currentSegment < currentLevel->segmentCount) {
+                    HandleMusicTransition(&state, currentLevel, 
+                                       currentLevel, currentLevel->currentSegment);
+                }
+            }
+            
+            // Left arrow - previous segment/level
+            if (IsKeyPressed(KEY_LEFT)) {
+                if (currentLevel->currentSegment > 0) {
+                    // Previous segment in current level
+                    HandleMusicTransition(&state, currentLevel, 
+                                       currentLevel, currentLevel->currentSegment - 1);
+                } else if (state.currentPlaying > 0) {
+                    // Last segment of previous level
+                    Level *prevLevel = &state.levels[state.currentPlaying - 1];
+                    state.currentPlaying--;
+                    HandleMusicTransition(&state, currentLevel, 
+                                       prevLevel, prevLevel->segmentCount - 1);
+                }
+            }
+
+            // Add to keyboard input section where other key checks are
+            if (IsKeyPressed(KEY_R)) {
+                state.repeatSegment = !state.repeatSegment;
+                state.repeatBtn.color = state.repeatSegment ? RED : GRAY;
+            }
+        }
+
         if (state.currentPlaying != -1) {
             Segment *currentSeg = &state.levels[state.currentPlaying].segments[state.levels[state.currentPlaying].currentSegment];
             UpdateMusicStream(currentSeg->free);
@@ -48,20 +106,12 @@ int main(void) {
         state.pauseBtn.isHovered = IsButtonHovered(state.pauseBtn, mousePoint);
         state.combatBtn.isHovered = IsButtonHovered(state.combatBtn, mousePoint);
         state.segmentBtn.isHovered = IsButtonHovered(state.segmentBtn, mousePoint);
+        state.repeatBtn.isHovered = IsButtonHovered(state.repeatBtn, mousePoint);
 
         // Handle pause button
         if (IsButtonClicked(state.pauseBtn, mousePoint)) {
             state.isPaused = !state.isPaused;
-            if (state.currentPlaying != -1) {
-                Segment *currentSeg = &state.levels[state.currentPlaying].segments[state.levels[state.currentPlaying].currentSegment];
-                if (state.isPaused) {
-                    PauseMusicStream(currentSeg->free);
-                    if (currentSeg->hasCombat) PauseMusicStream(currentSeg->combat);
-                } else {
-                    ResumeMusicStream(currentSeg->free);
-                    if (currentSeg->hasCombat) ResumeMusicStream(currentSeg->combat);
-                }
-            }
+            HandleMusicPause(&state);
         }
 
         // Handle combat button
@@ -79,6 +129,12 @@ int main(void) {
             state.showSegmentMenu = !state.showSegmentMenu;
         }
 
+        // Handle repeat button
+        if (IsButtonClicked(state.repeatBtn, mousePoint)) {
+            state.repeatSegment = !state.repeatSegment;
+            state.repeatBtn.color = state.repeatSegment ? RED : GRAY;
+        }
+
         // Handle scrolling
         float wheelMove = GetMouseWheelMove();
         if (wheelMove != 0) {
@@ -89,6 +145,11 @@ int main(void) {
             
             state.scrollY = Clamp(state.scrollY, minScroll, 0.0f);
         }
+
+        // After updating button states and before drawing
+        // Update pause button color to reflect state
+        state.pauseBtn.color = state.isPaused ? RED : GRAY;
+        state.pauseBtn.hoverColor = state.isPaused ? MAROON : LIGHTGRAY;
 
         BeginDrawing();
         ClearBackground(DARKERRED);
@@ -144,6 +205,7 @@ int main(void) {
         DrawButton(&state.pauseBtn);
         DrawButton(&state.combatBtn);
         DrawButton(&state.segmentBtn);
+        DrawButton(&state.repeatBtn);
 
         // Update combat button color
         if (state.currentPlaying != -1) {
