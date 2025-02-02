@@ -294,3 +294,94 @@ bool IsButtonHovered(Button button, Vector2 mousePoint) {
 bool IsButtonClicked(Button button, Vector2 mousePoint) {
     return IsButtonHovered(button, mousePoint) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 }
+
+void InitializeButtons(AppState *state, int screenWidth, int screenHeight) {
+    // Control buttons
+    state->pauseBtn = CreateTextButton(
+        (Rectangle){20, screenHeight - CONTROL_PANEL_HEIGHT + FONT_SIZE_SMALL, 100, 30},
+        "Pause", GRAY, LIGHTGRAY, BLACK, GetFontDefault(), FONT_SIZE_SMALL, 1.0f, false
+    );
+    
+    state->combatBtn = CreateTextButton(
+        (Rectangle){140, screenHeight - CONTROL_PANEL_HEIGHT + FONT_SIZE_SMALL, 100, 30},
+        "Combat", GRAY, LIGHTGRAY, BLACK, GetFontDefault(), FONT_SIZE_SMALL, 1.0f, false
+    );
+    
+    state->segmentBtn = CreateTextButton(
+        (Rectangle){screenWidth - 120, screenHeight - CONTROL_PANEL_HEIGHT + FONT_SIZE_SMALL, 100, 30},
+        "Segments", GRAY, LIGHTGRAY, BLACK, GetFontDefault(), FONT_SIZE_SMALL, 1.0f, false
+    );
+
+    // Progress bar
+    state->progressBar = (Rectangle){250, screenHeight - CONTROL_PANEL_HEIGHT + 20, 400, FONT_SIZE_SMALL};
+}
+
+void HandleSegmentMenu(AppState *state) {
+    if (!state->showSegmentMenu || state->currentPlaying == -1) return;
+
+    Vector2 mousePoint = GetMousePosition();
+    Level *currentLevel = &state->levels[state->currentPlaying];
+    
+    // Calculate menu dimensions
+    float maxWidth = state->segmentBtn.bounds.width;
+    for (int i = 0; i < currentLevel->segmentCount; i++) {
+        float nameWidth = MeasureText(currentLevel->segments[i].name, 10);
+        maxWidth = fmaxf(maxWidth, nameWidth + 20);
+    }
+
+    // Menu background
+    Rectangle menuBg = {
+        state->segmentBtn.bounds.x + state->segmentBtn.bounds.width - maxWidth - 10,
+        state->segmentBtn.bounds.y - (currentLevel->segmentCount * 40),
+        maxWidth + 10,
+        currentLevel->segmentCount * 40 + 5
+    };
+
+    // Check click outside
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && 
+        !CheckCollisionPointRec(mousePoint, menuBg) &&
+        !CheckCollisionPointRec(mousePoint, state->segmentBtn.bounds)) {
+        state->showSegmentMenu = false;
+    }
+
+    // Draw segments
+    for (int i = 0; i < currentLevel->segmentCount; i++) {
+        Rectangle segmentRec = {
+            menuBg.x + 5,
+            state->segmentBtn.bounds.y - ((i + 1) * 40) + 5,
+            maxWidth,
+            30
+        };
+
+        bool isHovered = CheckCollisionPointRec(mousePoint, segmentRec);
+        bool isSelected = (i == currentLevel->currentSegment);
+
+        // Draw segment background
+        DrawRectangleRec(segmentRec, isSelected ? WHITE : (isHovered ? LIGHTGRAY : GRAY));
+        if (isSelected) DrawRectangleLinesEx(segmentRec, 1, GRAY);
+
+        // Draw text
+        DrawText(currentLevel->segments[i].name,
+                segmentRec.x + 10,
+                segmentRec.y + (segmentRec.height - 10) / 2,
+                10,
+                isSelected ? BLACK : WHITE);
+
+        // Handle click
+        if (isHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            Segment *oldSeg = &currentLevel->segments[currentLevel->currentSegment];
+            StopMusicStream(oldSeg->free);
+            if (oldSeg->hasCombat) StopMusicStream(oldSeg->combat);
+
+            currentLevel->currentSegment = i;
+            Segment *newSeg = &currentLevel->segments[i];
+            PlayMusicStream(newSeg->free);
+            if (newSeg->hasCombat) {
+                PlayMusicStream(newSeg->combat);
+                SetMusicVolume(newSeg->free, state->persistentCombat ? 0.0f : 1.0f);
+                SetMusicVolume(newSeg->combat, state->persistentCombat ? 1.0f : 0.0f);
+            }
+            state->showSegmentMenu = false;
+        }
+    }
+}

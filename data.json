@@ -41,7 +41,7 @@
         },
         "0-1: Into the Fire": {
             "folder": "0-1",
-            "thumbnail": "thumbnail.png",
+            "thumbnail": "0-1 Into the Fire.png",
             "segments": {
                 "0": {
                     "name": "INTO THE FIRE",
@@ -54,7 +54,7 @@
         },
         "0-2: The Meatgrinder": {
             "folder": "0-2",
-            "thumbnail": "thumbnail.png",
+            "thumbnail": "0-2 The Meatgrinder.png",
             "segments": {
                 "0": {
                     "name": "THE MEATGRINDER",
@@ -78,7 +78,7 @@
         },
         "1-1: Heart of the Sunrise": {
             "folder": "1-1",
-            "thumbnail": "thumbnail.png",
+            "thumbnail": "1-1 Heart of the Sunrise.png",
             "segments": {
                 "0": {
                     "name": "A Thousand Greetings",
