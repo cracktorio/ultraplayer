@@ -128,9 +128,10 @@ void HandleSegmentMenu(AppState *state) {
 }
 
 int main(void) {
-    const int screenWidth = 800;
-    const int screenHeight = 450;
-    //SetConfigFlags(FLAG_MSAA_4X_HINT);
+    const int screenWidth = 900;
+    const int screenHeight = 600;
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+    SetConfigFlags(FLAG_WINDOW_ALWAYS_RUN);
     InitWindow(screenWidth, screenHeight, "ultraplayer");
     InitAudioDevice();
     SetTargetFPS(60);
