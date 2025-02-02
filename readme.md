@@ -4,13 +4,16 @@
 This is a music player that aims to mimic the way games play music.
 
 It functions by reading data from `data.json`, and loading the appropriate files from the assets folder.
-I have configured the musicplayer to work with the ULTRAKILL soundtrack (files ripped from the game), but any other game can work as long as you edit the `data.json`.
+You can find some examples and game OSTs [here](https://github.com/cracktorio/ultraplayer-music).
 
 Main Interface:
+
 ![Main](https://raw.githubusercontent.com/cracktorio/ultraplayer/refs/heads/main/screenshots/main.png)
 
 Support for segments:
+
 ![Segments](https://raw.githubusercontent.com/cracktorio/ultraplayer/refs/heads/main/screenshots/segments.png)
+
 ## Features
 
 - Seamless loop (provided you don't use mp3)
