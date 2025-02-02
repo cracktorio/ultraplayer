@@ -230,8 +230,9 @@
             "thumbnail": "3-2 In the Flesh.png",
             "segments": {
                 "0": {
-                    "name": "",
-                    "free": "Gabriel4.ogg"
+                    "name": "Gabriel",
+                    "free": "Gabriel 3-2.ogg",
+					"intro": "Gabriel 3-2 Intro.ogg"
                 }
             },
             "layer": "L3"
@@ -244,7 +245,11 @@
                     "name": "Sourire d'avril",
                     "free": "Sourire d'avril.ogg"
                 },
-                "1": {
+				"1": {
+					"name": "Flesh Prison",
+					"free": "Flesh Prison.ogg"
+				},
+                "2": {
                     "name": "Minos Prime",
                     "free": "Minos Prime.ogg",
                     "intro": "Minos Prime Intro.ogg"
@@ -447,13 +452,18 @@
             "thumbnail": "6-2 Aesthetics of Hate.png",
             "segments": {
                 "0": {
-                    "name": "Fallen Angel",
-                    "free": "Fallen Angel Intro Long.ogg"
+                    "name": "BWV 639",
+                    "free": "BWV639-organ.ogg"
                 },
                 "1": {
                     "name": "Main",
-                    "free": "Gabriel 6-2.ogg"
-                }
+                    "free": "Gabriel 6-2.ogg",
+					"intro": "Gabriel 6-2 Intro A.ogg"
+                },
+				"2": {
+					"name": "Beethoven: 7th Symphony, 2nd Movement",
+					"free": "Beethoven Symphony 7 Piano.ogg"
+				}
             },
             "layer": "L6"
         },
@@ -466,9 +476,14 @@
                     "free": "P-2 Clean.ogg",
                     "combat": "P-2.ogg"
                 },
-                "1": {
+				"1": {
+					"name": "Flesh Panopticon",
+					"free": "Flesh panopticon.ogg"
+				},
+                "2": {
                     "name": "Sisyphus Prime",
-                    "free": "Sisyphus Prime.ogg"
+                    "free": "Sisyphus Prime.ogg",
+					"intro": "Sisyphus Prime Intro.ogg"
                 }
             },
             "layer": "NONE"
