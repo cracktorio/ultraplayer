@@ -20,7 +20,12 @@ int main(void) {
     AppState state = {0};
     state.currentPlaying = -1;
     InitializeButtons(&state, screenWidth, screenHeight);
-
+    
+    BeginDrawing();
+        DrawText("Loading assets...", 10, 10, 20, WHITE);
+    EndDrawing();
+    
+    
     // Load levels
     if (!ParseJSONData("data.json", state.levels, &state.levelCount)) {
         CloseAudioDevice();
